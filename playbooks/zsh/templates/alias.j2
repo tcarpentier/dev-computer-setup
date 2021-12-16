@@ -1,0 +1,49 @@
+# OCI 
+alias oci_ami_list='oci compute image list --compartment-id "$TF_VAR_tenancy_ocid" --operating-system "Custom" --output table --query "data [*].{NAME:\"display-name\", OCID:\"id\", CREATED:\"time-created\"}"'
+alias oci_runnings='oci compute instance list --compartment-id "$TF_VAR_tenancy_ocid"  --output table --query "data [?\"lifecycle-state\" == "RUNNING"].{NAME:\"display-name\", OCID:\"id\", CREATED:\"time-created\", STATUS:\"lifecycle-state\"}"'
+
+# gmsaas
+alias gmw="gmsaas auth whoami"
+alias gma="gmsaas instances adbconnect $1"
+alias gml="gmsaas auth login $1 $2"
+alias gmd="gmsaas instances stop $1"
+alias gms="gmsaas instances start $1 $2"
+alias gmlt="gmsaas auth login {{ GMSAAS_USER }} {{ GMSAAS_PASSWORD }}"
+
+function gmreboot () {
+  ip=$(gmsaas --format=json instances get $1 | jq -r .instance.adb_serial)
+  echo "Reboot $ip"
+  adb -s $ip reboot
+  sleep 5
+  echo "Reconnect ADB $1"
+  gma $1
+  while [ $? -ne 0 ]; do
+    gma $1
+  done
+}
+
+function gmi () {
+  whoami=$(gmsaas --format=json auth whoami | jq -r .auth.email)
+  echo "Logged as $whoami"
+  gmsaas instances list
+}
+
+function gmwb () {
+  status=$(gmsaas --format=json instances get $1 | jq -r .instance.state)
+  while [ $status -ne "ONLINE" ]; do
+    status=$(gmsaas --format=json instances get $1 | jq -r .instance.state)
+  done
+  echo "Instance is online"
+}
+
+function fgma () {
+  echo "Connect the first gmsaas instance"
+  id=$(gmsaas --format=json instances list | jq -r '.instances | .[0] | .uuid')
+  gma $id
+}
+
+function gmtest () {
+  fgma
+  echo "Export INSTANCE_ID"
+  export INSTANCE_ID=$id
+}

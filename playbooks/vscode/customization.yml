@@ -1,0 +1,14 @@
+- name: VS Code (customization)
+  hosts: servers
+
+  tasks:
+    - name: Ensure ~/.config folder exists
+      file:
+        path: ~/.config
+        state: directory
+        mode: 0700
+
+    - name: Override default VS Code preferences
+      copy:
+        src: settings.json
+        dest: ~/.config/Code/User/settings.json

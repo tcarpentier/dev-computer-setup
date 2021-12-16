@@ -1,0 +1,13 @@
+- name: Python
+  hosts: servers
+
+  tasks:
+  # tasks file for obsproject
+
+  - name: install requirements
+    become: yes
+    package: name=ffmpeg state=present
+
+  - name: install obsproject
+    become: yes
+    package: name=obs-studio state=present

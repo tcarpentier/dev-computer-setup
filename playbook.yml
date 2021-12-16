@@ -1,0 +1,29 @@
+#########################################################################################
+#
+#  Note that import order here is important, so rearranging import lists
+#  is *not* recommended.
+#
+#########################################################################################
+
+- name: Configure machine for development work
+  hosts: servers
+
+##### Operating system packages and configuration
+
+- import_playbook: core.yml
+
+
+##### Developer tools
+
+# # Visual Studio Code
+- import_playbook: playbooks/vscode/main.yml
+
+# Pycharm
+- import_playbook: playbooks/pycharm/main.yml
+
+# Terraform
+- import_playbook: playbooks/terraform/main.yml
+- import_playbook: playbooks/terraform/vscode.yml
+
+roles:
+  - role: iancleary.zsh

@@ -1,0 +1,26 @@
+- name: Terraform
+  hosts: servers
+
+  vars:
+    terraform_version: "0.12.26"
+    terraform_arch: "amd64"
+    terraform_bin_path: /usr/local/bin
+
+  tasks:
+  - name: Make sure unzip is installed
+    become: yes
+    package: name=unzip state=present
+
+  - name: Check Terraform version
+    shell: "terraform --version | head -n1 | grep '{{ terraform_version }}'"
+    failed_when: False
+    changed_when: False
+    register: current_terraform_version
+
+  - name: Download and Install Terraform
+    become: yes
+    unarchive:
+      src: https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_{{ terraform_arch }}.zip
+      dest: "{{ terraform_bin_path }}"
+      remote_src: true
+    when: current_terraform_version.rc != 0

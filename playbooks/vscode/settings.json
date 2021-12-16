@@ -1,0 +1,70 @@
+{
+    // Debugging
+    "debug.internalConsoleOptions": "openOnSessionStart",
+    "debug.toolBarLocation": "docked",
+
+    // Text editor
+    "breadcrumbs.enabled": true,
+    "editor.autoClosingBrackets": "never",
+    "editor.find.autoFindInSelection": "never",
+    "editor.fontFamily": "PowerlineSymbols, Consolas, 'Courier New', monospace",
+    "editor.fontSize": 14,
+    "editor.formatOnPaste": true,
+    "editor.minimap.enabled": false,
+    "editor.parameterHints.enabled": false,
+    "editor.renderWhitespace": "boundary",
+    "editor.showFoldingControls": "always",
+    "editor.suggestSelection": "first",
+    "files.autoSave": "onWindowChange",
+    "files.defaultLanguage": "markdown",
+    "files.trimTrailingWhitespace": true,
+
+    // Explorer
+    "explorer.confirmDelete": false,
+    "explorer.confirmDragAndDrop": false,
+    "explorer.openEditors.visible": 0,
+
+    // Git
+    "git.inputValidation": "off",
+
+    // TypeScript
+    "typescript.updateImportsOnFileMove.enabled": "always",
+
+    // Themes/colors/fonts/workbench/etc.
+    "extensions.ignoreRecommendations": true,
+    "search.useGlobalIgnoreFiles": true,
+    "terminal.integrated.fontFamily": "",
+    "terminal.integrated.fontSize": 12,
+    "terminal.integrated.fontWeightBold": "500",
+    "terminal.integrated.rendererType": "canvas",
+    "window.restoreFullscreen": true,
+    "window.restoreWindows": "none",
+    "window.titleBarStyle": "native",
+    "window.zoomLevel": 0,
+    "workbench.editor.closeEmptyGroups": false,
+    "workbench.editor.enablePreview": false,
+    "workbench.settings.editor": "json",
+    "workbench.sideBar.location": "left",
+    "workbench.startupEditor": "none",
+    "workbench.tips.enabled": false,
+
+    // extension: Toggle Excluded Files
+    "toggleexcludedfiles.statusBar.enabled": true,
+
+    // extension: VS Intellicode
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+
+    // Python
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+      "--ignore=E203",
+      "--ignore=E266",
+      "--ignore=E501",
+      "--ignore=W503",
+      "--max-line-length=88",
+      "--select = B,C,E,F,W,T4,B9",
+      "--max-complexity = 18"
+    ],
+    "python.jediEnabled": false
+  }

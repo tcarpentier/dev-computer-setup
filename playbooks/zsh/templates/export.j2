@@ -1,0 +1,53 @@
+
+export GENYMOTION_PROD_VERSION=3.2.1
+export GENYMOTION_HOME=/home/{{ ansible_ssh_user }}/genymotion/$GENYMOTION_PROD_VERSION/genymotion/
+
+#Android
+export ANDROID_HOME=/home/{{ ansible_ssh_user }}/android-sdk/ 
+export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH
+
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/ 
+
+#NPM
+export PATH=:$HOME/.npm-global/bin:$PATH
+
+#Python
+export PATH=/home/{{ ansible_ssh_user }}/.local/bin:$PATH
+
+#OCI
+export TF_VAR_tenancy_ocid={{ TF_VAR_TENANCY_OCID }}
+export TF_VAR_compartment_ocid={{ TF_VAR_COMPARTMENT_OCID }}
+export TF_VAR_user_ocid={{ TF_VAR_USER_OCID }}
+export TF_VAR_fingerprint={{ TF_VAR_FINGERPRINT }}
+export TF_VAR_private_key_path={{ TF_VAR_PRIVATE_KEY_PATH }}
+
+#ALIBABA
+export ALICLOUD_ACCESS_KEY={{ ALICLOUD_ACCESS_KEY }}
+export ALICLOUD_SECRET_KEY={{ ALICLOUD_SECRET_KEY }}
+export ALICLOUD_REGION={{ ALICLOUD_REGION }}
+
+
+function install_last_genymotion_release() {
+  install_last_genymotion release
+}
+
+
+function install_last_genymotion_master() {
+  install_last_genymotion master
+}
+
+function install_last_genymotion() {
+  build=$(curl {{ GENYMOTION_SOFTS_JOB }}-$1/lastSuccessfulBuild/api/json | jq -r '.artifacts | .[] | select(.fileName|test(".bin")) | .fileName')
+  wget -O /tmp/$build {{ GENYMOTION_SOFTS_JOB }}-$1/lastSuccessfulBuild/artifact/build/packages/$build
+  chmod +x /tmp/$build
+  /tmp/$build -y -d /home/{{ ansible_ssh_user }}/genymotion/$1
+  rm /tmp/$build
+}
+
+function install_genymotion() {
+  build=$(curl {{ GENYMOTION_SOFTS_JOB }}-PRB/$1/api/json | jq -r '.artifacts | .[] | select(.fileName|test(".bin")) | .fileName')
+  wget -O /tmp/$build {{ GENYMOTION_SOFTS_JOB }}-PRB/$1/artifact/build/packages/$build
+  chmod +x /tmp/$build
+  /tmp/$build -y -d /home/{{ ansible_ssh_user }}/genymotion/$1
+  rm /tmp/$build
+}

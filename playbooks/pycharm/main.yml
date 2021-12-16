@@ -1,0 +1,49 @@
+- name: Pycharm
+  hosts: servers
+
+  vars:
+    pycharm_dir: pycharm-community-2021.3
+    pycharm_archive: "{{pycharm_dir}}.tar.gz"
+    pycharm_url_prefix: https://download.jetbrains.com/python/
+    pycharm_url: "{{pycharm_url_prefix}}{{pycharm_archive}}"
+    pycharm_install_dir: /opt/pycharm
+
+  tasks:
+  - name: Create PyCharm installation directory
+    become: yes
+    file: name={{pycharm_install_dir}} state=directory
+  
+  - name: Fetch PyCharm
+    become: yes
+    get_url:
+      url: "{{pycharm_url}}"
+      dest: /tmp/{{pycharm_archive}}
+
+  - name: Create a directory if it does not exist
+    become: yes
+    ansible.builtin.file:
+      path: "{{pycharm_install_dir}}"
+      state: directory
+      mode: '0755'
+
+
+  - name: Recursively change ownership of a directory
+    become: yes
+    ansible.builtin.file:
+      path: "{{pycharm_install_dir}}"
+      state: directory
+      recurse: yes
+      owner: thomas
+      group: thomas
+
+
+  - name: install pycharm
+    shell: |
+      cd {{pycharm_install_dir}}
+      tar xzvf /tmp/{{pycharm_archive}}
+      cd {{pycharm_dir}}
+
+  - name: create PyCharm link
+    become: yes
+    file: src={{pycharm_install_dir}}/{{pycharm_dir}}/bin/pycharm.sh dest=/usr/local/bin/pycharm   state=link force=yes
+

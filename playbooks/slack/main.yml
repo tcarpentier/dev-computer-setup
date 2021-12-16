@@ -1,0 +1,23 @@
+- name: Slack
+  hosts: servers
+
+  vars:
+    slack_version: "4.17.0"
+
+  tasks:
+    - name: Check if slack is installed
+      command: dpkg-query -W slack-desktop
+      register: check_slack
+      failed_when: false
+      changed_when: false
+
+    - name: Download Ubuntu slack package
+      command: "wget -O /tmp/slack-desktop-{{ slack_version }}-amd64.deb https://downloads.slack-edge.com/linux_releases/slack-desktop-{{ slack_version }}-amd64.deb"
+      args:
+        creates: "/tmp/slack-desktop-{{ slack_version }}-amd64.deb"
+      when: check_slack.rc == 1
+
+    - name: Install Ubuntu slack package
+      become: yes
+      command: dpkg -i /tmp/slack-desktop-{{slack_version}}-amd64.deb
+      when: check_slack.rc == 1

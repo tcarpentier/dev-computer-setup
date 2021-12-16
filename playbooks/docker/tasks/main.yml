@@ -1,0 +1,77 @@
+- name: Docker
+  hosts: servers
+  become: yes
+  remote_user: thomas
+
+  tasks:
+ 
+    # Further reading:
+    # https://docs.docker.com/install/linux/docker-ce/ubuntu/
+    # https://docs.docker.com/engine/install/ubuntu/
+    
+    - name: Install prerequisites for Docker repository
+      become: yes
+      apt:
+        name: ['apt-transport-https', 'ca-certificates', 'curl', 'gnupg2', 'software-properties-common']
+        update_cache: yes
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+
+    - name: Add Docker APT repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/{{ ansible_system | lower }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable
+
+    
+    - name: Uninstall old versions
+      apt:
+        force_apt_get: yes
+        name:
+          - docker
+          - docker-engine
+          - docker.io
+          - containerd
+          - runc
+        state: absent
+    
+    - name: Install docker community edition
+      apt:
+        force_apt_get: yes
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: present
+    
+    - name: Ensure storage base dir exists
+      file:
+        path: "/var/lib/docker"
+        state: directory
+        owner: root
+        group: root
+        mode: 0711
+    
+    - name: Ensure docker is running
+      service:
+        name: docker
+        state: started
+        enabled: yes
+      
+    - name: Install docker-compose
+      pip:
+        name: docker-compose
+
+    - name: Add group docker
+      group:
+        name: docker
+        state: present
+    
+    - name: adding existing user "{{ ansible_user }}" to group docker
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+      
+    
+    

@@ -1,0 +1,29 @@
+- name: Nodejs
+  hosts: servers
+  become: yes
+  remote_user: thomas
+ 
+  vars:
+    nodejs_version: 12
+    nodejs_apt_url: "http://deb.nodesource.com"
+  
+  tasks:
+
+    - name: Add the Node.js apt signing key
+      apt_key:
+        id: 9FD3B784BC1C6FC31A8A0A1C1655A0AB68576280
+        keyserver: "hkp://keyserver.ubuntu.com:80"
+        state: present
+
+    - name: Add the Node.js apt repository
+      apt_repository:
+        repo: "deb {{ nodejs_apt_url }}/node_{{ nodejs_version }}.x/ {{ ansible_facts.distribution_release|lower }} main"
+        state: present
+
+    - name: Install nodejs {{ nodejs_version }}.x
+      apt:
+        force_apt_get: yes
+        name:
+          - nodejs
+          - build-essential
+        state: present

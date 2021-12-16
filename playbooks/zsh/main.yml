@@ -1,0 +1,53 @@
+- name: Zsh
+  hosts: servers
+  roles:
+    - role: iancleary.zsh
+      users:
+        - username: thomas
+      zsh_theme: robbyrussell
+      ohmyzsh_bundles:
+        # Bundles from the default repo (robbyrussell's oh-my-zsh) only need a name
+        # https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins
+        #
+        # `name` is required (any valid file name will do so long as it's unique for the bundles)
+        # `url` is git username/repo
+        # `version` is git release and is required if `url` is define
+        # - name: ansible
+        - name: aws
+        - name: docker
+        - name: docker-compose
+        - name: gitfast
+        - name: pipenv
+        - name: yarn
+        # Syntax highlighting bundle.
+        - name: 'zsh-syntax-highlighting'
+          git:
+            user: zsh-users
+            repo: zsh-syntax-highlighting
+            version: 0.7.1
+  tasks:
+    - name: set default shell for users
+      become: yes
+      user:
+        name: 'thomas'
+        shell: /bin/zsh
+
+    - name: get file stat to be able to perform a check in the following task
+      local_action: stat path=/home/{{ ansible_ssh_user }}/.oh-my-zsh/custom/alias.zsh
+      register: file
+
+
+    - name: Render alias
+      template:
+        src: templates/alias.j2
+        dest: "/home/{{ ansible_ssh_user }}/.oh-my-zsh/custom/alias.zsh"
+
+    - name: Render aws_alias
+      template:
+        src: templates/aws_alias.j2
+        dest: "/home/{{ ansible_ssh_user }}/.aws/cli/alias"
+
+    - name: Render export
+      template:
+        src: templates/export.j2
+        dest: "/home/{{ ansible_ssh_user }}/.oh-my-zsh/custom/export.zsh"
