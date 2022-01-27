@@ -47,3 +47,23 @@ function gmtest () {
   echo "Export INSTANCE_ID"
   export INSTANCE_ID=$id
 }
+
+function wtfmyip () {
+  echo "IP Sortante: $(curl https://json.wtfismyip.com/ | jq .YourFuckingIPAddress )"
+  echo "IP V4: $(curl https://json.ipv4.myip.wtf/ | jq .YourFuckingIPAddress )"
+  echo "IP V6: $(curl https://json.wtfismyip.com/ | jq .YourFuckingIPAddress )" 
+}
+
+
+function use_staging() {
+  echo "Welcome to dark face on SaaS : Staging"
+  export {{ BASE_URL_KEY }}={{ BASE_URL_VALUE }}   
+  export {{ WS_BASE_URL_KEY }}={{ WS_BASE_URL_VALUE }}
+  export {{ HUB_BASE_URL_KEY }}={{ HUB_BASE_URL_VALUE }}        
+}
+
+function clean_genymotion_ova () {
+  rm -rf $HOME/.Genymobile/Genymotion/osimages/*
+  rm -rf $HOME/.Genymobile/Genymotion/system-images/*
+  rm -rf $HOME/.Genymobile/Genymotion/ova/*
+}
